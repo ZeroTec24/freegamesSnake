@@ -2,12 +2,12 @@ from turtle import *
 from random import randrange, choice
 from freegames import square, vector
 
-# Define a list of 5 colors (excluding red)
+
 colors = ['blue', 'green', 'purple', 'orange', 'yellow']
 
-# Randomly select different colors for snake and food
+
 snake_color = choice(colors)
-# Make sure food color is different from snake color
+
 food_color = choice([c for c in colors if c != snake_color])
 
 food = vector(0, 0)
@@ -44,11 +44,11 @@ def move():
 
     clear()
     
-    # Draw snake with random color
+
     for body in snake:
         square(body.x, body.y, 9, snake_color)
     
-    # Draw food with different random color
+    
     square(food.x, food.y, 9, food_color)
     
     update()
