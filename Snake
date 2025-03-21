@@ -1,41 +1,36 @@
-"""Snake, classic arcade game.
-
-Exercises
-
-1. How do you make the snake faster or slower?
-2. How can you make the snake go around the edges?
-3. How would you move the food?
-4. Change the snake to respond to mouse clicks.
-"""
-
-from random import randrange
 from turtle import *
-
+from random import randrange, choice
 from freegames import square, vector
+
+# Define una lista de colores (excluyendo el rojo)
+colors = ['blue', 'green', 'purple', 'orange', 'yellow']
+
+# Inicializa los colores de la serpiente y la comida
+snake_colors = [choice(colors), choice(colors)]  # Dos colores para la serpiente
+food_color = choice([c for c in colors if c not in snake_colors])  # Color de la comida
 
 food = vector(0, 0)
 snake = [vector(10, 0)]
 aim = vector(0, -10)
 
-color1 = 'black'  # Primer color
-color2 = 'blue'   # Segundo color
-
 def change(x, y):
-    """Change snake direction."""
+    "Cambia la dirección de la serpiente."
     aim.x = x
     aim.y = y
 
 def inside(head):
-    """Return True if head inside boundaries."""
+    "Retorna True si la cabeza está dentro de los límites."
     return -200 < head.x < 190 and -200 < head.y < 190
 
 def move():
-    """Move snake forward one segment."""
+    "Mueve la serpiente un segmento hacia adelante."
+    global snake_colors, food_color  
+
     head = snake[-1].copy()
     head.move(aim)
 
     if not inside(head) or head in snake:
-        square(head.x, head.y, 9, 'red')  # Dibujar cabeza en rojo si pierde
+        square(head.x, head.y, 9, 'red')  
         update()
         return
 
@@ -45,23 +40,26 @@ def move():
         print('Snake:', len(snake))
         food.x = randrange(-15, 15) * 10
         food.y = randrange(-15, 15) * 10
+        # Cambia el color de la comida cuando la serpiente la come
+        food_color = choice([c for c in colors if c not in snake_colors])
     else:
         snake.pop(0)
 
     clear()
 
-    # Dibujar el cuerpo de la serpiente con dos colores alternados
-    for i, body in enumerate(snake):
-        if i % 2 == 0:
-            square(body.x, body.y, 9, color1) 
-        else:
-            square(body.x, body.y, 9, color2)  
+    # Cambia los colores de la serpiente dinámicamente
+    snake_colors = [choice(colors), choice(colors)]
 
-    square(food.x, food.y, 9, 'green')  
+    for i, body in enumerate(snake):
+        color_index = i % len(snake_colors)
+        square(body.x, body.y, 9, snake_colors[color_index])
+
+    # Dibuja la comida con su color
+    square(food.x, food.y, 9, food_color)
+
     update()
     ontimer(move, 100)
 
-# Configuración de la ventana
 setup(420, 420, 370, 0)
 hideturtle()
 tracer(False)
